@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:14.4-alpine
+    hostname: db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5433:5432'
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    command: bash -c "
+        sleep 2 &&
+        python manage.py db create && 
+        python manage.py db migrate && 
+        uvicorn src.application:app --host 0.0.0.0 --port 5000 --reload"
+    volumes:
+      - ..:/opt/code
+    ports:
+      - '5000:5000'
+    env_file:
+      - ../.env
+    depends_on:
+      db:
+        condition: service_healthy
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - '8080:8080'
+    depends_on:
+      - db

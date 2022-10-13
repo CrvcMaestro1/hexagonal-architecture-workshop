@@ -1,0 +1,12 @@
+__pycache__/
+.cache
+.dockerignore
+.env.sample
+.git/
+.gitignore
+.gitlab-ci.yml
+.idea/
+.venv/
+venv/
+Dockerfile
+DockerfileTest
