@@ -126,3 +126,8 @@ To run the tests in watch mode:
 ```bash
 $ python manage.py check tests --watch
 ```
+
+Some interesting stuff
+======================
+
+https://stackoverflow.com/questions/72622714/how-to-handle-two-implementations-of-the-same-service

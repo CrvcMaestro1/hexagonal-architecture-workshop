@@ -10,7 +10,6 @@ Base: DeclarativeMeta = declarative_base()
 class Schemas(enum.Enum):
     public = "public"
     test = "test"
-    self_services = "self_services"
 
     @classmethod
     def list(cls) -> List:
@@ -19,3 +18,5 @@ class Schemas(enum.Enum):
 
 from src.infrastructure.adapters.output.repositories.entities.category_entity import CategoryEntity  # noqa: E402 F401
 from src.infrastructure.adapters.output.repositories.entities.product_entity import ProductEntity  # noqa: E402 F401
+from src.infrastructure.adapters.output.repositories.entities.room_entity import RoomEntity  # noqa: E402 F401
+from src.infrastructure.adapters.output.repositories.entities.event_entity import EventEntity  # noqa: E402 F401

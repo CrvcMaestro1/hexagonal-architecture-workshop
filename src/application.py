@@ -6,7 +6,7 @@ from src.configuration import (
 )
 from src.infrastructure.adapters.input.http.utils.error_handler import ErrorHandler
 from src.infrastructure.adapters.input.http.v1 import (
-    supplier_sales_history_controller, category_controller, product_controller
+    supplier_sales_history_controller, category_controller, product_controller, room_controller
 )
 
 
@@ -25,6 +25,7 @@ def create_application() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    application.include_router(router=room_controller.room_router(), prefix='/v1')
     application.include_router(router=category_controller.category_router(), prefix='/v1')
     application.include_router(router=product_controller.product_router(), prefix='/v1')
     application.include_router(router=supplier_sales_history_controller.supplier_sales_history_router(),

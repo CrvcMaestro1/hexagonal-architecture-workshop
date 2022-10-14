@@ -14,6 +14,9 @@ from src.domain.category.output.category_repository import CategoryRepository
 from src.domain.product.input.product_service import ProductService
 from src.domain.product.output.product_repository import ProductRepository
 from src.domain.product.product_service_impl import ProductServiceImpl
+from src.domain.room.default_room_service import DefaultRoomService
+from src.domain.room.input.room_service import RoomService
+from src.domain.room.output.room_repository import RoomRepository
 
 from src.domain.supplier_sales_history.input.supplier_sales_history_service import SupplierSalesHistoryService
 from src.domain.supplier_sales_history.output.supplier_sales_history_repository import SupplierSalesHistoryRepository
@@ -22,16 +25,19 @@ from src.infrastructure.adapters.output.remote.supplier_sales_history_repository
     SupplierSalesHistoryRepositoryRemoteImpl
 )
 from src.infrastructure.adapters.output.repositories.category_repository_impl import CategoryRepositoryImpl
+from src.infrastructure.adapters.output.repositories.default_room_repository import DefaultRoomRepository
 from src.infrastructure.adapters.output.repositories.product_repository_impl import ProductRepositoryImpl
 
 
 def configure_inject() -> None:
     def config(binder: inject.Binder) -> None:
+        binder.bind_to_provider(RoomRepository, DefaultRoomRepository)
         binder.bind_to_provider(CategoryRepository, CategoryRepositoryImpl)
         binder.bind_to_provider(ProductRepository, ProductRepositoryImpl)
 
         binder.bind_to_provider(SupplierSalesHistoryRepository, SupplierSalesHistoryRepositoryRemoteImpl)
 
+        binder.bind_to_provider(RoomService, DefaultRoomService)
         binder.bind_to_provider(CategoryService, CategoryServiceImpl)
         binder.bind_to_provider(ProductService, ProductServiceImpl)
 
