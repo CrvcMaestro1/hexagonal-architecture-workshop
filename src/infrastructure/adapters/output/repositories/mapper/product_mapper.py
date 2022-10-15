@@ -1,4 +1,3 @@
-from src.domain.category.category import Category
 from src.domain.product.product import Product, ProductCreateOut, ProductUpdateOut
 from src.infrastructure.adapters.output.repositories.entities import ProductEntity
 
@@ -16,7 +15,7 @@ class ProductMapper:
             price=product.price,
             pvp=product.pvp,
             has_discount=product.has_discount,
-            category=Category.from_orm(product.category)
+            # category=Category.from_orm(product.category)
         )
 
 

@@ -1,8 +1,6 @@
 from dataclasses_json import dataclass_json, LetterCase
 from pydantic import BaseModel
 
-from src.domain.category.category import Category
-
 
 @dataclass_json(letter_case=LetterCase.SNAKE)
 class ProductBase(BaseModel):
@@ -17,7 +15,8 @@ class Product(ProductBase):
     price: float
     pvp: float
     has_discount: bool
-    category: Category
+
+    # category: Category
 
     class Config:
         orm_mode = True
