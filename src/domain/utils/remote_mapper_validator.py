@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date
 from typing import Dict, Any
 
 from src.domain.utils.date_utils import str_to_date

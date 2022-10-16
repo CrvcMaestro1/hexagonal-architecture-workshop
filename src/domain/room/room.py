@@ -1,4 +1,3 @@
-import re
 from typing import Any
 
 from dataclasses_json import dataclass_json, LetterCase
