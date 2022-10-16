@@ -119,7 +119,7 @@ class TestDefaultRoomService:
     ) -> None:
         today = datetime.datetime.now().date()
         with pytest.raises(ValueError, match=f"Day must be {DAYS_IN_ADVANCE} days in advance"):
-            EventOut(id=1, name="Event A", room=room, day=today)
+            EventIn(name="Event A", room_id=1, day=today)
 
     def test_should_raise_an_error_with_event_repeated_on_same_date(
             self, injector: None, event_repository: Mock, event_in: EventIn, event_without_room: EventWithOutRoom
