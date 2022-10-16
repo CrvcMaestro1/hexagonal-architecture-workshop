@@ -1,3 +1,3 @@
 import os
 
-MONOLITH_BASE_URL = os.getenv("MONOLITH_BASE_URL")
+PUBLIC_EVENTS_URL = os.getenv("PUBLIC_EVENTS_URL")

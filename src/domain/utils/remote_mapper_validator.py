@@ -1,6 +1,7 @@
 from datetime import date, datetime
 from typing import Dict, Any
 
+from src.domain.utils.date_utils import str_to_date
 from src.domain.utils.exceptions import ApplicationError
 
 
@@ -36,5 +37,5 @@ class RemoteMapperValidator:
     @staticmethod
     def parser(type_field: Any, value: Any) -> Any:
         if type_field is date:
-            return datetime.strptime(value, "%Y-%m-%d").date()
+            return str_to_date(value)
         return type_field(value)
