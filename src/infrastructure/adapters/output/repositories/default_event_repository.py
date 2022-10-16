@@ -5,7 +5,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Session
 
-from src.domain.event.event import EventIn, EventOut
+from src.domain.event.event import EventIn, EventOut, EventWithOutRoom
 from src.domain.event.output.event_repository import EventRepository
 from src.infrastructure.adapters.output.repositories.database_engine_config import database_engine, DatabaseEnum
 from src.infrastructure.adapters.output.repositories.entities import EventEntity
@@ -27,11 +27,16 @@ class DefaultEventRepository(EventRepository):
             return EventMapper.entity_to_domain(event)
 
     @database_engine(database_type=DatabaseEnum.master)
-    def check_if_exists_event_in_the_same_day_by_room(self, event: EventIn) -> bool:
-        pass
+    def check_if_exists_event_in_the_same_day_by_room(self, event: EventIn, **kwargs: Optional[Any]) -> bool:
+        with Session(bind=kwargs.get('engine')) as session:
+            events = session.query(EventEntity).filter(
+                EventEntity.room_id == event.room_id,
+                EventEntity.day == event.day
+            )
+            return events.count() > 0
 
     @database_engine(database_type=DatabaseEnum.master)
-    def create(self, event: EventIn, **kwargs: Optional[Any]) -> EventOut:
+    def create(self, event: EventIn, **kwargs: Optional[Any]) -> EventWithOutRoom:
         with Session(bind=kwargs.get('engine')) as session:
             query = (
                 insert(EventEntity)
@@ -44,7 +49,7 @@ class DefaultEventRepository(EventRepository):
             return EventWithOutRoomMapper.entity_to_domain(result)
 
     @database_engine(database_type=DatabaseEnum.master)
-    def update(self, event_id: int, event: EventIn,  **kwargs: Optional[Any]) -> EventOut:
+    def update(self, event_id: int, event: EventIn, **kwargs: Optional[Any]) -> EventWithOutRoom:
         with Session(bind=kwargs.get('engine')) as session:
             query = (
                 update(EventEntity)
@@ -65,4 +70,3 @@ class DefaultEventRepository(EventRepository):
             )
             session.execute(query)
             session.commit()
-
