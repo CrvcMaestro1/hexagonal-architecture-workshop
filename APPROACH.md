@@ -7,7 +7,7 @@ Casos de uso
 	- 1.- No puede crearse más de 1 evento por sala en un determinado día.
 	- 2.- Los eventos deberán crearse con 5 días de antelación como mínimo.
 * El negocio puede listar los eventos locales (creados a través del API)
-* El negocio puede listar los eventos externos (obtenidas de un API externo, tomar en cuenta la segunda consideración de los eventos)
+* El negocio puede listar los eventos externos (obtenidas de un API externo)
 * API Externa: https://634863e50b382d796c70cd78.mockapi.io/api/v1/events
 
 
