@@ -4,7 +4,7 @@ import inject
 
 from src.domain.event.input.event_service import EventService
 from src.domain.event.output.event_repository import EventRepository
-from src.domain.event.event import EventIn, EventOut
+from src.domain.event.event import EventIn, EventOut, EventWithOutRoom
 
 from src.domain.event.output.public_event_repository import PublicEventRepository
 from src.domain.utils.exceptions import ApplicationError
@@ -32,12 +32,12 @@ class DefaultEventService(EventService):
     def check_if_exists_event_in_the_same_day_by_room(self, event: EventIn) -> bool:
         return self.repository.check_if_exists_event_in_the_same_day_by_room(event)
 
-    def create(self, event: EventIn) -> EventOut:
+    def create(self, event: EventIn) -> EventWithOutRoom:
         if self.check_if_exists_event_in_the_same_day_by_room(event):
             raise ApplicationError(400, 'It is not allowed to create events in the same room on the same day')
         return self.repository.create(event)
 
-    def update(self, event_id: int, event: EventIn) -> EventOut:
+    def update(self, event_id: int, event: EventIn) -> EventWithOutRoom:
         return self.repository.update(event_id, event)
 
     def delete(self, event_id: int) -> None:
