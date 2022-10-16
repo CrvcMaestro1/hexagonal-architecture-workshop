@@ -5,7 +5,7 @@ from abc import (
 from typing import List
 
 from src.domain.event.event import (
-    EventIn, EventOut
+    EventIn, EventOut, EventWithOutRoom
 )
 
 
@@ -28,11 +28,11 @@ class EventService(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def create(self, event: EventIn) -> EventOut:
+    def create(self, event: EventIn) -> EventWithOutRoom:
         pass
 
     @abstractmethod
-    def update(self, event_id: int, event: EventIn) -> EventOut:
+    def update(self, event_id: int, event: EventIn) -> EventWithOutRoom:
         pass
 
     @abstractmethod
