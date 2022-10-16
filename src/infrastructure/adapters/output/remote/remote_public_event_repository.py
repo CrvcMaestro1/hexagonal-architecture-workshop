@@ -13,11 +13,12 @@ class RemotePublicEventRepository(PublicEventRepository):
         url = f"{PUBLIC_EVENTS_URL}/events"
         response = HttpConsumer.consume(HttpMethod.GET, url)
 
+        app_error = ApplicationError(response.status_code, 'An error occurred while obtaining public events.',
+                                     response.data)
         if not response.is_success:
-            raise ApplicationError(
-                response.status_code,
-                'An error occurred while obtaining public events.',
-                response.data
-            )
+            raise app_error
         data = response.data
+        if not isinstance(data, list):
+            raise app_error
+
         return PublicEventRemoteMapper().remote_to_domain(data)
