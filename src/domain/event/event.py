@@ -1,4 +1,3 @@
-import re
 from datetime import datetime, date
 from typing import Any
 
@@ -28,6 +27,8 @@ class EventIn(EventBase):
     def day_must_be_days_in_advance(cls, v: Any) -> Any:
         today = datetime.now().date()
         day = str_to_date(v)
+        if day is None:
+            raise ValueError("Day is mandatory")
         subtract_days = subtract_days_from_dates(day, today)
         if subtract_days < DAYS_IN_ADVANCE:
             raise ValueError(f"Day must be {DAYS_IN_ADVANCE} days in advance")
