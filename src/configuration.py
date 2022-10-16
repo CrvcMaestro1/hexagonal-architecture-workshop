@@ -8,6 +8,10 @@ from fastapi.exceptions import RequestValidationError
 from starlette import status
 from starlette.responses import JSONResponse
 
+from src.domain.event.default_event_service import DefaultEventService
+from src.domain.event.input.event_service import EventService
+from src.domain.event.output.event_repository import EventRepository
+from src.domain.event.output.public_event_repository import PublicEventRepository
 from src.domain.room.default_room_service import DefaultRoomService
 from src.domain.room.input.room_service import RoomService
 from src.domain.room.output.room_repository import RoomRepository
@@ -15,19 +19,24 @@ from src.domain.room.output.room_repository import RoomRepository
 from src.domain.supplier_sales_history.input.supplier_sales_history_service import SupplierSalesHistoryService
 from src.domain.supplier_sales_history.output.supplier_sales_history_repository import SupplierSalesHistoryRepository
 from src.domain.supplier_sales_history.supplier_sales_history_service_impl import SupplierSalesHistoryServiceImpl
+from src.infrastructure.adapters.output.remote.remote_public_event_repository import RemotePublicEventRepository
 from src.infrastructure.adapters.output.remote.supplier_sales_history_repository_remote_impl import (
     SupplierSalesHistoryRepositoryRemoteImpl
 )
+from src.infrastructure.adapters.output.repositories.default_event_repository import DefaultEventRepository
 from src.infrastructure.adapters.output.repositories.default_room_repository import DefaultRoomRepository
 
 
 def configure_inject() -> None:
     def config(binder: inject.Binder) -> None:
         binder.bind_to_provider(RoomRepository, DefaultRoomRepository)
+        binder.bind_to_provider(EventRepository, DefaultEventRepository)
+        binder.bind_to_provider(PublicEventRepository, RemotePublicEventRepository)
 
         binder.bind_to_provider(SupplierSalesHistoryRepository, SupplierSalesHistoryRepositoryRemoteImpl)
 
         binder.bind_to_provider(RoomService, DefaultRoomService)
+        binder.bind_to_provider(EventService, DefaultEventService)
 
         binder.bind_to_provider(SupplierSalesHistoryService, SupplierSalesHistoryServiceImpl)
 
