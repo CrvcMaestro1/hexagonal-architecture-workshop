@@ -7,7 +7,7 @@ import inject
 import pytest
 
 from src.domain.event.event import (
-    EventIn, EventOut, DAYS_IN_ADVANCE
+    EventIn, EventOut, DAYS_IN_ADVANCE, EventWithOutRoom
 )
 from src.domain.event.default_event_service import DefaultEventService
 from src.domain.event.output.event_repository import EventRepository
@@ -42,20 +42,32 @@ def room() -> RoomOut:
 
 
 @pytest.fixture
-def event_in(room: RoomOut) -> EventIn:
-    return EventIn(name="Event A", room_id=room.id, day=date(2022, 10, 20))
+def five_days_later() -> date:
+    today = datetime.datetime.now().date()
+    day = today + datetime.timedelta(days=5)
+    return day
 
 
 @pytest.fixture
-def event_out(room: RoomOut) -> EventOut:
-    return EventOut(id=1, name="Event A", room=room, day=date(2022, 10, 20))
+def event_in(room: RoomOut, five_days_later: date) -> EventIn:
+    return EventIn(name="Event A", room_id=room.id, day=five_days_later)
 
 
 @pytest.fixture
-def events(room: RoomOut) -> List[EventOut]:
+def event_out(room: RoomOut, five_days_later: date) -> EventOut:
+    return EventOut(id=1, name="Event A", room=room, day=five_days_later)
+
+
+@pytest.fixture
+def event_without_room(five_days_later: date) -> EventWithOutRoom:
+    return EventWithOutRoom(id=1, name="Event A", day=five_days_later)
+
+
+@pytest.fixture
+def events(room: RoomOut, five_days_later: date) -> List[EventOut]:
     return [
-        EventOut(id=1, name="Event A", room=room, day=date(2022, 10, 20)),
-        EventOut(id=2, name="Event B", room=room, day=date(2022, 10, 21))
+        EventOut(id=1, name="Event A", room=room, day=five_days_later),
+        EventOut(id=2, name="Event B", room=room, day=five_days_later)
     ]
 
 
@@ -70,30 +82,30 @@ class TestDefaultRoomService:
         event_repository.list.assert_called_once()
 
     def test_should_return_event_by_id(
-            self, injector: None, event_repository: Mock, event_in: EventIn) -> None:
-        event_repository.get.return_value = event_in
+            self, injector: None, event_repository: Mock, event_out: EventOut) -> None:
+        event_repository.get.return_value = event_out
         event_result = DefaultEventService().get(1)
-        assert event_result == event_in
-        assert isinstance(event_result, EventIn)
+        assert event_result == event_out
+        assert isinstance(event_result, EventOut)
         event_repository.get.assert_called_once_with(1)
 
     def test_should_create_event(
-            self, injector: None, event_repository: Mock, event_in: EventIn, event_out: EventOut
+            self, injector: None, event_repository: Mock, event_in: EventIn, event_without_room: EventWithOutRoom
     ) -> None:
-        event_repository.create.return_value = event_out
+        event_repository.create.return_value = event_without_room
         event_repository.check_if_exists_event_in_the_same_day_by_room.return_value = False
         event_created_result = DefaultEventService().create(event_in)
-        assert event_created_result == event_out
-        assert isinstance(event_created_result, EventOut)
+        assert event_created_result == event_without_room
+        assert isinstance(event_created_result, EventWithOutRoom)
         event_repository.create.assert_called_once_with(event_in)
 
     def test_should_update_event(
-            self, injector: None, event_repository: Mock, event_in: EventIn, event_out: EventOut
+            self, injector: None, event_repository: Mock, event_in: EventIn, event_without_room: EventWithOutRoom
     ) -> None:
-        event_repository.update.return_value = event_out
+        event_repository.update.return_value = event_without_room
         event_updated_result = DefaultEventService().update(1, event_in)
-        assert event_updated_result == event_out
-        assert isinstance(event_updated_result, EventOut)
+        assert event_updated_result == event_without_room
+        assert isinstance(event_updated_result, EventWithOutRoom)
         event_repository.update.assert_called_once_with(1, event_in)
 
     def test_should_delete_event(
@@ -110,10 +122,10 @@ class TestDefaultRoomService:
             EventOut(id=1, name="Event A", room=room, day=today)
 
     def test_should_raise_an_error_with_event_repeated_on_same_date(
-            self, injector: None, event_repository: Mock, event_in: EventIn, event_out: EventOut
+            self, injector: None, event_repository: Mock, event_in: EventIn, event_without_room: EventWithOutRoom
     ) -> None:
         # first event
-        event_repository.create.return_value = event_out
+        event_repository.create.return_value = event_without_room
         event_repository.check_if_exists_event_in_the_same_day_by_room.return_value = False
         DefaultEventService().create(event_in)
         # second event - repeated
